@@ -3,9 +3,12 @@
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>CSS Grid</title>
+	<title>CSS Grid Magic Squares</title>
 	<!-- jquery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<!-- angular.js -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 
 	<script src="index.js"></script>
 	<link rel="stylesheet" type="text/css" href="index.css">
@@ -13,9 +16,14 @@
 <body>
 
 <div id="mainWrapper">
+	<div id="form" ng-app="myApp" ng-controller="myCtrl">
+		<form style="white-space: nowrap;">
+			Level <select ng-model="selectedLevel" ng-options="level for level in levels" ng-init="selectedLevel=3" ng-change="changeLevel()"></select>
+		</form>
+	</div>
+	<br>
 	<div id="stage">
 	</div>
-	<div id="stage2"></div>
 </div>
 
 <div id="win"></div>
@@ -24,8 +32,9 @@
 	<h2>Rules & Tips</h2>
 	<ul>
 		<li>Arrange the numbers so that each row, column and diagonal sums are equal.</li>
-		<li>Click 2 differnt boxes to swap numbers.</li>
-		<li>Click the same box twice to highligh.</li>
+		<li>Click 2 different boxes to swap numbers.</li>
+		<li>Click the same box twice to highlight.</li>
+		<li>Click <a href="MagicSquares_3x3_solution.jpg">here</a> to see solution for 3x3 grid.</li>
 	</ul>
 </div>
 

@@ -1,8 +1,25 @@
+let app=angular.module('myApp', []);
+app.controller('myCtrl', function($scope, $http) {
+	$scope.levels = [];
+	for (i = 3; i <= 99; i++) {
+		$scope.levels.push(i);
+	}
+
+	$scope.changeLevel = function() {
+		matrixSize = $scope.selectedLevel;
+		reset();
+		matrix(matrixSize, "stage");
+		calcSums(matrixSize);		
+		console.log($scope.selectedLevel + " : " + matrixSize);
+		//console.log(matrixSize);
+	}
+});
+
 let rowSumIndex = []; // horizontal sum fields
 let colSumIndex = []; // vertical sum fields
 let diaSumIndex = []; // diagonal sum fields
 let numIndex = [];
-let matrixSize = 5;
+let matrixSize = 3;
 
 // clear variables before creating a new matrix
 let reset = function () {
@@ -10,6 +27,7 @@ let reset = function () {
 	colSumIndex = []; // vertical sum fields
 	diaSumIndex = []; // diagonal sum fields
 	numIndex = [];
+	$("#win").empty();
 }
 
 let selected = "0"; // stores selected (last clicked) element
@@ -93,7 +111,7 @@ let matrix = function(matrixSize, stageName) {
 	reset();
 
 	// first matrix element for diag sum
-	$("#"+stageName).append(`<div id="0">0</div>`);
+	$("#"+stageName).empty().append(`<div id="0">0</div>`);
 
 	let rowCount = 0;
 	for (i = 1; i <= Math.pow(matrixSize + 1, 2); i++) {
@@ -122,9 +140,9 @@ let matrix = function(matrixSize, stageName) {
 
 	matrixStyle(matrixSize, stageName); // Applying CSS
 
-	console.log("rowSumIndex: " + rowSumIndex);
-	console.log("colSumIndex: " + colSumIndex);
-	console.log("diaSumIndex: " + diaSumIndex);
+	//console.log("rowSumIndex: " + rowSumIndex);
+	//console.log("colSumIndex: " + colSumIndex);
+	//console.log("diaSumIndex: " + diaSumIndex);
 
 }
 
