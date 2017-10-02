@@ -1,28 +1,22 @@
+:root {
+	--bgcolor-tile-play: #C8E6C9;
+	--bgcolor-tile-sum: orange;
+	--bgcolor-tile-sum-rollover: blue;
+}
+
 * {
-	/*border: 1px solid blue;*/
 	font-size: 1em;
 }
 
-/*div[id*="Wrapper"] {
-	display: grid;
-	grid-gap: 10px;
-}*/
-
-#mainWrapper, #mainWrapper2 {
-	/*height: 100%;
-	width: 100%;*/
+#mainWrapper {
 	display: grid;
 	grid-template-columns: min-content auto;
 }
 
-#stage, #stage2 {
+#stage {
 	display: grid;
 	grid-column-gap: 1em;
 	grid-row-gap: 1em;
-}
-
-#stage2 {
-	border: 1em solid black;
 }
 
 #win {
@@ -38,17 +32,18 @@
 	height: 3em;
 	user-select: none;
 	-moz-user-select: none;
+	border: 2px solid white;
 }
 
 .playTile {
-	background-color: #C8E6C9;
+	background-color: var(--bgcolor-tile-play);
 	border: 0.1em solid blue;
 	border-radius: 0.5em;
 	cursor: pointer;
 }
 
 .sumTile {
-	background: orange;
+	background-color: var(--bgcolor-tile-sum);
 	border-radius: 0.5em;
 	cursor: default;
 }
@@ -59,4 +54,8 @@
 
 .highlight {
 	box-shadow: inset 0 0 0.5em red;
+}
+
+.sumRollover {
+	border: 2px dashed var(--bgcolor-tile-sum-rollover);
 }
