@@ -54,64 +54,65 @@ let clicked = function(targetID) {
 	}
 }
 
-let sumTileMouseover = function(targetID) {
-	$("#"+targetID).addClass("sumRollover");
+// add/remove sum rollover class
+let setHover = function(targetID, hover) {
+	if (hover) {
+		$("#"+targetID).addClass("sumRollover");
+	} else {
+		$("#"+targetID).removeClass("sumRollover");		
+	}
+}
+
+// mouse over function for sum tiles
+let sumTileHover = function(targetID, hover) {
+	setHover(targetID, hover);
 
 	// tid is targetID as int
 	let tid = parseInt(targetID);
 	if (tid === 0) {
 		rowSumIndex.forEach(function(v, i) {
 			// row 1 - 1, row 2 - 2, etc...
-			$("#" + (v - i - 1)).addClass("sumRollover");
+			setHover((v - i - 1), hover);
+			//$("#" + (v - i - 1)).addClass("sumRollover");
 		});
 	} else if (tid === Math.pow(matrixSize+1,2)) {
 		rowSumIndex.forEach(function(v, i) {
 			// row 1 - matrixSize, row 2 - matrixSize + 1, etc...
-			$("#" + (v - matrixSize + i)).addClass("sumRollover");
+			setHover((v - matrixSize + i), hover);
+			//$("#" + (v - matrixSize + i)).addClass("sumRollover");
 		});
 	} else if ($.inArray(tid, rowSumIndex) !== -1) {
 		// row sum tiles
 		for (i = tid - matrixSize; i < tid; i++) {
-			$("#"+i).addClass("sumRollover");
+			setHover(i, hover);
+			//$("#"+i).addClass("sumRollover");
 		}
 	} else {
 		// col sum tiles
 		let rowIndex = $.inArray(tid, colSumIndex);
 		rowSumIndex.forEach(function(v) {
-			$("#" + (v - matrixSize + rowIndex)).addClass("sumRollover");
+			setHover((v - matrixSize + rowIndex), hover);
+			//$("#" + (v - matrixSize + rowIndex)).addClass("sumRollover");
 		});
 	}
 };
 
-let sumTileMouseout = function(targetID) {
-	$("#"+targetID).removeClass("sumRollover");
-	// tid is targetID as int
-	let tid = parseInt(targetID);
-	if (tid === 0) {
-		rowSumIndex.forEach(function(v, i) {
-			// row 1 - 1, row 2 - 2, etc...
-			$("#" + (v - i - 1)).removeClass("sumRollover");
-		});
-	} else if (tid === Math.pow(matrixSize+1,2)) {
-		rowSumIndex.forEach(function(v, i) {
-			// row 1 - matrixSize, row 2 - matrixSize + 1, etc...
-			$("#" + (v - matrixSize + i)).removeClass("sumRollover");
-		});
-	} else if ($.inArray(tid, rowSumIndex) !== -1) {
-		// row sum tiles
-		for (i = tid - matrixSize; i < tid; i++) {
+// Alternate to mouseover function on mobile
+let tap = false;
+let sumTileTap = function(targetID) {
+	if (!tap) {
+		sumTileHover(targetID, true);
+		tap = true;
+	} else {
+		// clear highlight
+		let num = Math.pow(matrixSize + 1, 2);
+		for (i = 0; i <= num; i++) {
 			$("#"+i).removeClass("sumRollover");
 		}
-	} else {
-		// col sum tiles
-		let rowIndex = $.inArray(tid, colSumIndex);
-		rowSumIndex.forEach(function(v) {
-			$("#" + (v - matrixSize + rowIndex)).removeClass("sumRollover");
-		});
+		tap = false;
 	}
+	console.log(tap);
 };
-
-
 
 // calc sums on change
 let calcSums = function(matrixSize) {
@@ -173,7 +174,8 @@ let matrix = function(matrixSize, stageName) {
 	$("#"+stageName).empty().append(`<div id="0">0</div>`);
 
 	let rowCount = 0;
-	for (i = 1; i <= Math.pow(matrixSize + 1, 2); i++) {
+	let num = Math.pow(matrixSize + 1, 2);
+	for (i = 1; i <= num; i++) {
 		$("#"+stageName).append(`<div id="${i}" class="tile">${i}</div>`);
 
 		// collecting sum indexes for row and col
@@ -187,15 +189,16 @@ let matrix = function(matrixSize, stageName) {
 			numIndex.push(i);
 		}
 	}
+	colSumIndex.pop(); // last item is diagonal sum
 	// sum indexes for diagonals
 	diaSumIndex.push(0);
 	diaSumIndex.push(Math.pow(matrixSize + 1, 2));
 
 	// re-init playable fields
-	for (i = 1; i <= Math.pow(matrixSize, 2); i++) {
+	num = Math.pow(matrixSize, 2);
+	for (i = 1; i <= num; i++) {
 		$("#"+numIndex[i]).html(i+1);
 	}
-
 
 	matrixStyle(matrixSize, stageName); // Applying CSS
 
@@ -217,14 +220,28 @@ let matrixStyle = function(matrixSize, stageName) {
 
 	// Add style to sum tiles
 	// Add mouseover function to sum tiles
-	[].concat(rowSumIndex, colSumIndex, diaSumIndex).forEach(function(i) {
+	let sumIndex = [].concat(rowSumIndex, colSumIndex, diaSumIndex);
+	sumIndex.forEach(function(i) {
 		$("#"+i).addClass("tile sumTile");
-		$("#"+i).mouseover(function(i) {
-			sumTileMouseover(i.target.id);
-		}).mouseout(function(i) {
-			sumTileMouseout(i.target.id);
-		});
-		//console.log('test');
+
+			/*$("#"+i).click(function(i) {
+				sumTileTap(i.target.id);
+			});*/
+
+		// hover for desktop, tap for mobile
+		if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+			//console.log("mobile");
+			$("#"+i).click(function(i) {
+				sumTileTap(i.target.id);
+			});
+		} else {
+			//console.log("desktop");
+			$("#"+i).mouseover(function(i) {
+				sumTileHover(i.target.id, true);
+			}).mouseout(function(i) {
+				sumTileHover(i.target.id, false);
+			});
+		}
 	});
 
 	// Add click function to play tiles
@@ -243,5 +260,12 @@ $(function() {
 
 	matrix(matrixSize, "stage");
 	calcSums(matrixSize);
+
+	/*if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		//alert("mobile");
+		$("#win").html("mobile");
+	} else {
+		$("#win").html("not mobile");
+	}*/
 
 });
