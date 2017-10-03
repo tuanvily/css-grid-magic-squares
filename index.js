@@ -1,3 +1,9 @@
+/************************************************
+Author: Tuan Vi Ly
+Version: 1.0 2017-10-03
+************************************************/
+
+
 let app=angular.module('myApp', []);
 app.controller('myCtrl', function($scope, $http) {
 	$scope.levels = [];
@@ -10,8 +16,6 @@ app.controller('myCtrl', function($scope, $http) {
 		reset();
 		matrix(matrixSize, "stage");
 		calcSums(matrixSize);		
-		//console.log($scope.selectedLevel + " : " + matrixSize);
-		//console.log(matrixSize);
 	}
 });
 
@@ -73,26 +77,22 @@ let sumTileHover = function(targetID, hover) {
 		rowSumIndex.forEach(function(v, i) {
 			// row 1 - 1, row 2 - 2, etc...
 			setHover((v - i - 1), hover);
-			//$("#" + (v - i - 1)).addClass("sumRollover");
 		});
 	} else if (tid === Math.pow(matrixSize+1,2)) {
 		rowSumIndex.forEach(function(v, i) {
 			// row 1 - matrixSize, row 2 - matrixSize + 1, etc...
 			setHover((v - matrixSize + i), hover);
-			//$("#" + (v - matrixSize + i)).addClass("sumRollover");
 		});
 	} else if ($.inArray(tid, rowSumIndex) !== -1) {
 		// row sum tiles
 		for (i = tid - matrixSize; i < tid; i++) {
 			setHover(i, hover);
-			//$("#"+i).addClass("sumRollover");
 		}
 	} else {
 		// col sum tiles
 		let rowIndex = $.inArray(tid, colSumIndex);
 		rowSumIndex.forEach(function(v) {
 			setHover((v - matrixSize + rowIndex), hover);
-			//$("#" + (v - matrixSize + rowIndex)).addClass("sumRollover");
 		});
 	}
 };
@@ -167,7 +167,6 @@ let checkSums = function() {
 
 // create new matix function
 let matrix = function(matrixSize, stageName) {
-	//console.log("matrix: " + matrixSize);
 	reset();
 
 	// first matrix element for diag sum
@@ -201,11 +200,6 @@ let matrix = function(matrixSize, stageName) {
 	}
 
 	matrixStyle(matrixSize, stageName); // Applying CSS
-
-	//console.log("rowSumIndex: " + rowSumIndex);
-	//console.log("colSumIndex: " + colSumIndex);
-	//console.log("diaSumIndex: " + diaSumIndex);
-
 }
 
 let matrixStyle = function(matrixSize, stageName) {
@@ -223,10 +217,6 @@ let matrixStyle = function(matrixSize, stageName) {
 	let sumIndex = [].concat(rowSumIndex, colSumIndex, diaSumIndex);
 	sumIndex.forEach(function(i) {
 		$("#"+i).addClass("tile sumTile");
-
-			/*$("#"+i).click(function(i) {
-				sumTileTap(i.target.id);
-			});*/
 
 		// hover for desktop, tap for mobile
 		if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
@@ -256,16 +246,6 @@ let matrixStyle = function(matrixSize, stageName) {
 
 
 $(function() {
-	//let matrixSize = 3;
-
 	matrix(matrixSize, "stage");
 	calcSums(matrixSize);
-
-	/*if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-		//alert("mobile");
-		$("#win").html("mobile");
-	} else {
-		$("#win").html("not mobile");
-	}*/
-
 });
